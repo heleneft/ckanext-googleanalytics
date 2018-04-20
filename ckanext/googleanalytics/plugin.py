@@ -233,7 +233,9 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
         See ITemplateHelpers.
 
         '''
-        return {'googleanalytics_header': self.googleanalytics_header}
+        return {'googleanalytics_header': self.googleanalytics_header,
+                'get_resource_views': dbutil.get_resource_visits_for_id,
+                'get_resource_downloads': dbutil.get_resource_downloads_for_id}
 
     def googleanalytics_header(self):
         '''Render the googleanalytics_header snippet for CKAN 2.0 templates.

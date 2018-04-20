@@ -6,6 +6,10 @@ import ckan.model as model
 # from ckan.model.authz import PSEUDO_USER__VISITOR
 from ckan.lib.base import *
 
+import logging
+
+log = logging.getLogger(__name__)
+
 cached_tables = {}
 
 
@@ -75,6 +79,22 @@ def get_resource_visits_for_url(url):
         WHERE resource_id = resource.id
         AND resource.url = :url"""), url=url).fetchone()
     return count and count[0] or ""
+
+def get_resource_visits_for_id(id):
+    connection = model.Session.connection()
+    count = connection.execute(
+        text("""SELECT visits_ever FROM resource_stats
+        WHERE resource_id = :id"""), id=id).fetchone()
+    result = str(count[0]) if count else "0"
+    return result
+
+def get_resource_downloads_for_id(id):
+    connection = model.Session.connection()
+    count = connection.execute(
+        text("""SELECT visits_recently FROM resource_stats
+        WHERE resource_id = :id"""), id=id).fetchone()
+    result = str(count[0]) if count else "0"
+    return result
 
 """ get_top_packages is broken, and needs to be rewritten to work with
 CKAN 2.*. This is because ckan.authz has been removed in CKAN 2.*
